@@ -10,9 +10,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sentiment import analyse_sentiment
 from portfolio import add_holding, remove_holding, get_portfolio, portfolio_summary
+from config import DEMO_MODE
 
 st.set_page_config(page_title="Sentiment Portfolio Tracker", layout="wide")
 st.title("Sentiment Portfolio Tracker")
+
+if DEMO_MODE:
+    st.info("Running in **demo mode** with sample headlines. "
+            "Set a NEWSAPI_KEY secret for live data.")
 
 # ── Sidebar: Portfolio Management ───────────────────────────────────
 st.sidebar.header("Manage Portfolio")

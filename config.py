@@ -1,5 +1,7 @@
 """
 Configuration — loads settings from a .env file or environment variables.
+
+When NEWSAPI_KEY is not set the app runs in demo mode with sample data.
 """
 
 import os
@@ -8,8 +10,4 @@ from dotenv import load_dotenv
 load_dotenv()  # reads from .env in the project root
 
 NEWSAPI_KEY = os.getenv("NEWSAPI_KEY", "")
-
-if not NEWSAPI_KEY:
-    print("WARNING: NEWSAPI_KEY is not set. Create a .env file with:\n"
-          '  NEWSAPI_KEY=your_key_here\n'
-          "or export it as an environment variable.")
+DEMO_MODE = not bool(NEWSAPI_KEY)
