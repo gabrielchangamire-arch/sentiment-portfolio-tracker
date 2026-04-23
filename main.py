@@ -107,7 +107,16 @@ def handle_charts():
 
     print("\nGenerating charts...")
     generate_all_charts(results)
-    print("Done. Check the PNG files in the current directory.")
+    print("Done.")
+
+    show = input("Open charts now? (y/n): ").strip().lower()
+    if show == "y":
+        from PIL import Image
+        for name in ["sentiment_bars.png", "portfolio_allocation.png", "sentiment_vs_gain.png"]:
+            try:
+                Image.open(name).show()
+            except Exception:
+                pass
 
 
 def main():
