@@ -1,5 +1,5 @@
 """
-Configuration — loads settings from a .env file or environment variables.
+Configuration - loads settings from a .env file or environment variables.
 
 When NEWSAPI_KEY is not set the app runs in demo mode with sample data.
 """

@@ -1,5 +1,5 @@
 """
-Sentiment-Portfolio Tracker — CLI entry point.
+Sentiment-Portfolio Tracker - CLI entry point.
 
 Run:  python main.py
 """
@@ -30,7 +30,7 @@ def handle_add():
         print("Invalid number.")
         return
     h = add_holding(ticker, shares, cost)
-    print(f"Portfolio updated: {h['ticker']} — {h['shares']} shares @ ${h['cost_per_share']:.2f}")
+    print(f"Portfolio updated: {h['ticker']} - {h['shares']} shares @ ${h['cost_per_share']:.2f}")
 
 
 def handle_remove():
@@ -74,7 +74,7 @@ def handle_summary():
 def handle_sentiment():
     portfolio = get_portfolio()
     if not portfolio:
-        print("Portfolio is empty — add stocks first.")
+        print("Portfolio is empty - add stocks first.")
         return
 
     results = []
@@ -86,7 +86,7 @@ def handle_sentiment():
         label = "positive" if result["avg_compound"] >= 0.05 else (
             "negative" if result["avg_compound"] <= -0.05 else "neutral"
         )
-        print(f"    {result['article_count']} articles — "
+        print(f"    {result['article_count']} articles - "
               f"avg sentiment: {result['avg_compound']:+.4f} ({label})")
 
     return results
@@ -96,7 +96,7 @@ def handle_charts():
     print("Running sentiment analysis for all holdings...")
     portfolio = get_portfolio()
     if not portfolio:
-        print("Portfolio is empty — add stocks first.")
+        print("Portfolio is empty - add stocks first.")
         return
 
     results = []
@@ -140,7 +140,7 @@ def main():
             print("Goodbye!")
             break
         else:
-            print("Invalid choice — enter 1-7.")
+            print("Invalid choice - enter 1-7.")
 
 
 if __name__ == "__main__":

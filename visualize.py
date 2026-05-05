@@ -1,5 +1,5 @@
 """
-Sentiment-Portfolio Tracker — visualisation & correlation module.
+Sentiment-Portfolio Tracker - visualisation & correlation module.
 
 Charts:
   1. Sentiment bar chart per ticker
@@ -51,7 +51,7 @@ def plot_portfolio_allocation(save_path: str = "portfolio_allocation.png") -> st
     valid = [s for s in summary if s["market_value"] is not None]
 
     if not valid:
-        print("No portfolio data with current prices — nothing to plot.")
+        print("No portfolio data with current prices - nothing to plot.")
         return ""
 
     labels = [s["ticker"] for s in valid]

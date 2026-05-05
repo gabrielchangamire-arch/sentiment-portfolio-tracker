@@ -1,5 +1,5 @@
 """
-Sentiment Portfolio Tracker — Streamlit web interface.
+Sentiment Portfolio Tracker - Streamlit web interface.
 
 Run:  streamlit run streamlit_app.py
 """
@@ -29,7 +29,7 @@ with st.sidebar.form("add_holding_form", clear_on_submit=True):
 
     if add_submitted and ticker:
         h = add_holding(ticker, shares, cost)
-        st.success(f"Added {h['ticker']} — {h['shares']} shares @ ${h['cost_per_share']:.2f}")
+        st.success(f"Added {h['ticker']} - {h['shares']} shares @ ${h['cost_per_share']:.2f}")
         st.rerun()
 
 portfolio = get_portfolio()

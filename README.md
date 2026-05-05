@@ -4,11 +4,11 @@ A Python CLI tool that tracks your stock portfolio and correlates news sentiment
 
 ## Features
 
-- **Portfolio management** — add/remove holdings with cost basis tracking
-- **Live prices** — fetches current stock prices via Yahoo Finance
-- **Sentiment analysis** — scores recent news headlines per ticker using VADER
-- **Correlation** — scatter plot with Pearson correlation between sentiment and gain/loss %
-- **Charts** — auto-generated PNGs:
+- **Portfolio management** - add/remove holdings with cost basis tracking
+- **Live prices** - fetches current stock prices via Yahoo Finance
+- **Sentiment analysis** - scores recent news headlines per ticker using VADER
+- **Correlation** - scatter plot with Pearson correlation between sentiment and gain/loss %
+- **Charts** - auto-generated PNGs:
   - Sentiment bar chart per ticker
   - Portfolio allocation pie chart
   - Sentiment vs performance scatter with trend line
@@ -17,7 +17,7 @@ A Python CLI tool that tracks your stock portfolio and correlates news sentiment
 
 ```bash
 # Clone the repo
-git clone https://github.com/YOUR_USERNAME/sentiment-portfolio-tracker.git
+git clone https://github.com/gabrielchangamire-arch/sentiment-portfolio-tracker.git
 cd sentiment-portfolio-tracker
 
 # Install dependencies

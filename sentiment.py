@@ -111,8 +111,8 @@ def analyse_sentiment(ticker: str, company_name: str = "",
     -------
     dict with keys:
         ticker, query, article_count,
-        articles  — list of {title, date, url, sentiment{neg, neu, pos, compound}},
-        avg_compound — float mean compound score across all headlines.
+        articles  - list of {title, date, url, sentiment{neg, neu, pos, compound}},
+        avg_compound - float mean compound score across all headlines.
     """
     query = f"{ticker} {company_name}".strip()
     articles = fetch_articles(query, page_size=page_size)
