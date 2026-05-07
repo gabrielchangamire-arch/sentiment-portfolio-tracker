@@ -1,23 +1,43 @@
 """
-Sentiment Portfolio Tracker - Streamlit web interface.
+Sentiment Portfolio Tracker — Streamlit web interface (DistilBERT branch).
 
 Run:  streamlit run streamlit_app.py
+
+This branch uses HuggingFace's distilbert-base-uncased-finetuned-sst-2-english
+to score both the headline AND the article description. The original VADER
+version lives on the `master` branch.
 """
 
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from sentiment import analyse_sentiment
+
+from sentiment import analyse_sentiment, MODEL_NAME, _get_pipeline
 from portfolio import add_holding, remove_holding, get_portfolio, portfolio_summary
 from config import DEMO_MODE
 
-st.set_page_config(page_title="Sentiment Portfolio Tracker", layout="wide")
+st.set_page_config(page_title="Sentiment Portfolio Tracker (DistilBERT)", layout="wide")
 st.title("Sentiment Portfolio Tracker")
+st.caption(
+    f"DistilBERT version · model: `{MODEL_NAME}` · scores headline + description"
+)
+
+
+# Cache the model so the heavy load only happens once per session.
+@st.cache_resource(show_spinner="Loading DistilBERT model (first run only)...")
+def _warm_model():
+    return _get_pipeline()
+
+
+_warm_model()
+
 
 if DEMO_MODE:
-    st.info("Running in **demo mode** with sample headlines. "
-            "Set a NEWSAPI_KEY secret for live data.")
+    st.info(
+        "Running in **demo mode** with sample headlines and descriptions. "
+        "Set a `NEWSAPI_KEY` secret for live data."
+    )
 
 # ── Sidebar: Portfolio Management ───────────────────────────────────
 st.sidebar.header("Manage Portfolio")
@@ -65,28 +85,31 @@ with col_opts:
     num_articles = st.slider("Articles to fetch", 5, 50, 15)
 
 if st.button("Run Sentiment Analysis") and query_ticker:
-    with st.spinner(f"Fetching news and scoring sentiment for {query_ticker}..."):
+    with st.spinner(f"Scoring news for {query_ticker} with DistilBERT..."):
         result = analyse_sentiment(query_ticker, page_size=num_articles)
 
-    # Headline metric
     label = ("Positive" if result["avg_compound"] >= 0.05
              else "Negative" if result["avg_compound"] <= -0.05
              else "Neutral")
-    m1, m2 = st.columns(2)
+    m1, m2, m3 = st.columns(3)
     m1.metric("Avg Sentiment", f"{result['avg_compound']:+.4f}")
     m2.metric("Articles Analysed", result["article_count"])
-    st.caption(f"Overall tone: **{label}**")
+    m3.metric("Overall Tone", label)
 
-    # Articles table
+    # Articles table — now with description preview + DistilBERT label
     if result["articles"]:
         art_data = []
         for a in result["articles"]:
+            desc_preview = (a.get("description") or "")
+            if len(desc_preview) > 110:
+                desc_preview = desc_preview[:107] + "..."
             art_data.append({
                 "Date": a["date"],
                 "Headline": a["title"],
+                "Description": desc_preview,
+                "Label": a["sentiment"]["label"],
                 "Compound": round(a["sentiment"]["compound"], 4),
-                "Pos": round(a["sentiment"]["pos"], 3),
-                "Neg": round(a["sentiment"]["neg"], 3),
+                "P(positive)": round(a["sentiment"]["pos"], 3),
             })
         st.dataframe(pd.DataFrame(art_data), use_container_width=True,
                      hide_index=True)
@@ -101,7 +124,7 @@ if st.button("Run Sentiment Analysis") and query_ticker:
     ax1.barh(range(len(titles)), compounds, color=colors)
     ax1.set_yticks(range(len(titles)))
     ax1.set_yticklabels(titles, fontsize=7)
-    ax1.set_xlabel("Compound Sentiment Score")
+    ax1.set_xlabel("Compound Sentiment Score (DistilBERT, [-1, +1])")
     ax1.set_title(f"Per-Article Sentiment: {query_ticker}")
     ax1.axvline(0, color="grey", linewidth=0.8)
     ax1.invert_yaxis()
@@ -115,13 +138,12 @@ if st.button("Run Sentiment Analysis") and query_ticker:
         if query_ticker in port_map and port_map[query_ticker]["gain_loss_pct"] is not None:
             st.subheader("Sentiment vs Portfolio Performance")
 
-            # Gather all portfolio tickers with sentiment
             all_results = [result]
             other_tickers = [h["ticker"] for h in portfolio
                              if h["ticker"] != query_ticker]
 
             if other_tickers:
-                with st.spinner("Fetching sentiment for remaining portfolio tickers..."):
+                with st.spinner("Scoring sentiment for remaining portfolio tickers..."):
                     for t in other_tickers:
                         all_results.append(analyse_sentiment(t, page_size=10))
 
@@ -147,7 +169,7 @@ if st.button("Run Sentiment Analysis") and query_ticker:
                 x_line = np.linspace(min(xs) - 0.05, max(xs) + 0.05, 50)
                 ax2.plot(x_line, m * x_line + b, "--", color="grey",
                          alpha=0.7, label=f"r = {corr:.3f}")
-                ax2.set_xlabel("Avg Compound Sentiment")
+                ax2.set_xlabel("Avg Compound Sentiment (DistilBERT)")
                 ax2.set_ylabel("Gain / Loss (%)")
                 ax2.set_title("Sentiment vs Portfolio Performance")
                 ax2.legend()
@@ -159,3 +181,18 @@ if st.button("Run Sentiment Analysis") and query_ticker:
             else:
                 st.info("Need at least 2 portfolio tickers with price data "
                         "to plot correlation.")
+
+st.divider()
+with st.expander("About this version"):
+    st.markdown(
+        """
+**This is the DistilBERT branch.** It scores **both the headline and the
+article description** using `distilbert-base-uncased-finetuned-sst-2-english`,
+a transformer model from HuggingFace fine-tuned on the SST-2 dataset.
+
+- **Master branch** uses VADER (a lexicon-based scorer). Faster, no model download, but headline-only and weaker on negation/sarcasm.
+- **This branch** uses a transformer model. ~250 MB to download on first run, slower per request, but reads the description so it understands context the headline alone misses.
+
+Both produce a "compound" score in `[-1, +1]` so the rest of the app (charts, correlations) works identically.
+"""
+    )
