@@ -43,8 +43,8 @@ if DEMO_MODE:
 st.sidebar.header("Manage Portfolio")
 with st.sidebar.form("add_holding_form", clear_on_submit=True):
     ticker = st.text_input("Ticker Symbol", placeholder="e.g. AAPL").strip().upper()
-    shares = st.number_input("Shares", min_value=0.01, step=0.01, format="%.2f")
-    cost = st.number_input("Cost per Share ($)", min_value=0.01, step=0.01, format="%.2f")
+    shares = st.number_input("Shares", min_value=0.01, step=1.0, value=10.0, format="%.2f")
+    cost = st.number_input("Cost per Share ($)", min_value=0.01, step=5.0, value=100.0, format="%.2f")
     add_submitted = st.form_submit_button("Add to Portfolio")
 
     if add_submitted and ticker:
