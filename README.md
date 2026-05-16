@@ -1,6 +1,6 @@
 # Sentiment Portfolio Tracker
 
-A Python CLI tool that tracks your stock portfolio and correlates news sentiment with portfolio performance. Uses NewsAPI for headlines, VADER for sentiment scoring, and yfinance for live prices.
+A Python CLI tool for tracking a stock portfolio and comparing recent news sentiment with portfolio performance. It uses NewsAPI for headlines, VADER for sentiment scoring, and yfinance for current prices. The sentiment/performance chart is meant as an exploratory signal, not a trading recommendation.
 
 ## Features
 
@@ -8,7 +8,7 @@ A Python CLI tool that tracks your stock portfolio and correlates news sentiment
 - **Live prices** - fetches current stock prices via Yahoo Finance
 - **Sentiment analysis** - scores recent news headlines per ticker using VADER
 - **Correlation** - scatter plot with Pearson correlation between sentiment and gain/loss %
-- **Charts** - auto-generated PNGs:
+- **Charts** - generates PNGs from the holdings and sentiment data:
   - Sentiment bar chart per ticker
   - Portfolio allocation pie chart
   - Sentiment vs performance scatter with trend line
@@ -23,7 +23,7 @@ cd sentiment-portfolio-tracker
 # Install dependencies
 pip install -r requirements.txt
 
-# Add your NewsAPI key
+# Add your own NewsAPI key
 echo "NEWSAPI_KEY=your_api_key_here" > .env
 ```
 
@@ -40,9 +40,9 @@ echo "NEWSAPI_KEY=your_api_key_here" > .env
 python main.py
 ```
 
-Follow the interactive menu to manage your portfolio, run sentiment analysis, and generate charts.
+The interactive menu lets you manage holdings, run sentiment analysis, and generate charts from the portfolio saved on your machine.
 
-## Project Structure
+## Project structure
 
 ```
 sentiment-portfolio-tracker/
@@ -55,7 +55,7 @@ sentiment-portfolio-tracker/
 └── .gitignore
 ```
 
-## Data Storage
+## Data storage
 
 - Portfolio holdings are stored locally in `portfolio.json` (auto-created, git-ignored)
 - The NewsAPI key is read from a `.env` file in the project root (git-ignored)
